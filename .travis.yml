@@ -1,0 +1,21 @@
+language: generic 
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t lu97is/react-test -f ./frontend/Dockerfile.dev ./frontend
+
+script:
+    - docker run -e CI=true lu97is/react-test npm test
+
+after_success:
+    - docker build -t lu97is/multi-frontend ./frontend
+    - docker build -t lu97is/multi-nginx ./nginx
+    - docker build -t lu97is/multi-server ./server
+    - docker build -t lu97is/multi-worker ./worker
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push lu97is/multi-frontend
+    - docker push lu97is/multi-nginx
+    - docker push lu97is/multi-server
+    - docker push lu97is/multi-worker
