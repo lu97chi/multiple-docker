@@ -10,7 +10,7 @@ services:
         restart: always
         depends_on:
             - api
-            - client
+            - frontend
         build: 
             dockerfile: Dockerfile.dev
             context: ./nginx
@@ -33,14 +33,14 @@ services:
             - PGDATABASE=postgres
             - PGPASSWORD=postgres_password
             - PGPORT=5432
-    client:
+    frontend:
         stdin_open: true
         build: 
             dockerfile: Dockerfile.dev
-            context: ./client
+            context: ./frontend
         volumes: 
             - /app/node_modules
-            - ./client:/app
+            - ./frontend:/app
     worker:
         build: 
             dockerfile: Dockerfile.dev
